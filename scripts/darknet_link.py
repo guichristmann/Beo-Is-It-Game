@@ -10,7 +10,7 @@ from darknet_ros_msgs.msg import BoundingBoxes, BoundingBox
 # Publishes the detected classes
 # Total of 12 objects. Create a unique counter for each one.
 # When count matches FRAMES_COUNT publish message for the class
-FRAMES_COUNT = 35
+FRAMES_COUNT = 5
 count = {}
 class_pub = rospy.Publisher('/darknet_link/shown_object', String, queue_size=1)
 def bboxes_callback(info):
@@ -49,7 +49,7 @@ def capture_and_send_image_to_darknet_ros():
 
     rate = rospy.Rate(30)
 
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
 
     while True:
         ret, frame = cap.read()
