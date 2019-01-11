@@ -1,12 +1,12 @@
 fiction_book: white, yellow, medium-sized, fiction, rectangular, smooth, light
-journal: brown, thin, blank, soft-cover, notebook, light, small
+journal: brown, thin, blank, soft-cover, notebook, light, small, rectangular
 batman_notebook: colorful, batman, hard-cover, medium-sized, rectangular, notebook, light, large, big
-movie_encyclopedia: colorful, thick, heavy, movies, large, big
-white_marker: white, black tipped, light, cylinder, thick, smooth
+movie_encyclopedia: colorful, book, rectangular, thick, heavy, movies, large, big
+white_marker: white, blacktipped, light, cylinder, thick, smooth
 black_marker: black, blue, cylinder, light, thick, smooth
-blue_transparent_pen: transparent, blue, ink, cylinder, thin, pen, smooth
-black_transparent_pen: transparent, black, ink, light, cylinder, thin, pen, rubbery
-plain_orange_ball: plain, orange, squishy, soft, small
-soccer_ball: hard, striped, blue, white, patterned, medium-sized, light
-ping_pong_ball: tiny, hard, bouncy, plain, light
-basketball: large, bouncy, blue, striped, heavy
+blue_transparent_pen: transparent, light, blue, cylinder, thin, pen, smooth
+black_transparent_pen: transparent, black, light, cylinder, thin, pen, rubbery
+plain_orange_ball: plain, orange, round, spherical, squishy, soft, small, worn
+soccer_ball: hard, striped, blue, round, spherical, white, patterned, medium-sized, light
+ping_pong_ball: tiny, small, hard, round, spherical, bouncy, plain, light, white
+basketball: large, big, round, spherical, bouncy, blue, striped, heavy, worn

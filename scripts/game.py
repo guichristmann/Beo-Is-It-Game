@@ -33,6 +33,7 @@ class States:
     BEO_GUESSER0 = 4
     USER_GUESSER0 = 5
     USER_GUESSER1 = 6
+    FINAL_STATE = 7
 
 # Helper class to handling the guessing game
 class BeoGuesser:
@@ -106,7 +107,7 @@ class BeoPicker:
 
     def pickRandomObject(self):
         self.chosen_obj = random.sample(self.objs, 1)[0]
-        self.chosen_obj = 'journal'
+        #self.chosen_obj = 'journal'
         self.chosen_chars = self.objs_dict[self.chosen_obj]
 
         print("[pickRandomObject] Chosen Object: {}".format(self.chosen_obj))
@@ -122,12 +123,14 @@ class IsItGame:
 
         # Speech detection module
         self.isit_sd = SpeechDetection(PACKAGE_PATH + "speech_models/Is_it.pmdl",
-                                       record_callback=self.processSpeech)
+                                       record_callback=self.processSpeech,
+                                       audio_gain=1.0,
+                                       sensitivity=0.5)
 
         self.yesno_sd = SpeechDetection([PACKAGE_PATH + "speech_models/Yes.pmdl",
                                          PACKAGE_PATH + "speech_models/No.pmdl"],
                                            wake_callback=[self.saidYes,
-                                            self.saidNo], audio_gain=0.95,
+                                            self.saidNo], audio_gain=1.0,
                                           sensitivity=0.4)
 
 
@@ -139,8 +142,6 @@ class IsItGame:
 
         # Controls eyes display
         self.beo_eyes = Eyes()
-
-
 
         self.player_said = ''
 
@@ -170,23 +171,28 @@ class IsItGame:
         print("Detected Speech: {}".format(self.player_said))
 
     def IntroductionSequence(self):
-       self.beo_eyes.set_expression("default")
-       
-       self.beoSpeakMotion("Hello", MOTIONS_FOLDER + "intro_0.mot")
-       self.beoSpeakMotion("Wanna play a game?", MOTIONS_FOLDER + "intro_1.mot")
-       self.beo_eyes.set_expression("wink")
-       sleep(0.5)
-       self.beo_eyes.set_expression("default")
+        self.beo_eyes.set_expression("default")
+        
+        self.beoSpeakMotion("Hello", MOTIONS_FOLDER + "intro_0.mot")
+        self.beo_eyes.set_expression("wink")
+        self.beoSpeakMotion("Wanna play a game?", MOTIONS_FOLDER + "intro_1.mot")
+        self.beo_eyes.set_expression("default")
+        sleep(0.5)
 
     def ExplanationSequence(self):
-       self.beoSpeakMotion("This will be a guessing game with these objects in front of us.", MOTIONS_FOLDER + "exp_0.mot")
-       sleep(0.5)
-       self.beoSpeakMotion("Each of us will take turns in choosing an object, and the other person has to guess what it is.", MOTIONS_FOLDER + "exp_1.mot")
-       self.beoSpeakMotion("We will do that by asking 'Yes' and 'No' questions about the characteristics of these objects.", MOTIONS_FOLDER + "exp_2.mot")
-       sleep(0.5)
-       self.beoSpeakMotion('All our questions should start with Is it?. For example: Is it big?, Is it white? or Is it a cylinder?',
-            [MOTIONS_FOLDER + "exp_3.mot"])
-       sleep(1.2)
+        self.beo_eyes.set_expression("default")
+        self.beoSpeakMotion("This will be a guessing game with these objects in front of us.", MOTIONS_FOLDER + "exp_0.mot")
+        sleep(0.5)
+        self.beo_eyes.set_expression("shut")
+        self.beoSpeakMotion("Each of us will take turns in choosing an object, and the other person has to guess what it is.", MOTIONS_FOLDER + "exp_1.mot")
+        self.beo_eyes.set_expression("default")
+        self.beoSpeakMotion("We will do that by asking 'Yes' and 'No' questions about the characteristics of these objects.", MOTIONS_FOLDER + "exp_2.mot")
+        sleep(0.5)
+        self.beo_eyes.set_expression("shut")
+        self.beoSpeakMotion('All our questions should start with Is it?. For example: Is it big?, Is it white? or Is it a cylinder?',
+             [MOTIONS_FOLDER + "exp_3.mot"])
+        sleep(1.2)
+        self.beo_eyes.set_expression("default")
 
     def ConfirmationSequence(self):
         self.beoSpeakMotion("Did you understand everything so far?",
@@ -200,15 +206,21 @@ class IsItGame:
                                  MOTIONS_FOLDER + "exp_4.mot")
             return False
 
+        self.beo_eyes.set_expression("shut")
         self.beoSpeakMotion("Great. Let's start.", MOTIONS_FOLDER + 'conf_1.mot')
+        self.beo_eyes.set_expression("default")
 
         return True
 
     def PregameSequence(self):
         self.beoSpeakMotion("Okay, I will start as the guesser. Choose one of the objects in front of us. But don't tell me!", MOTIONS_FOLDER + 'pre_0.mot')
+        self.beo_eyes.set_expression("shut")
         sleep(4)
+        self.beo_eyes.set_expression("default")
         self.beoSpeakMotion("When you are ready, say YES.", MOTIONS_FOLDER + 'pre_1.mot')
+        self.beo_eyes.set_expression("shut")
         self.yesno_sd.run(process=False)
+        self.beo_eyes.set_expression("default")
         self.beoSpeakMotion("Okay, I'm going to try and guess which object you chose!", MOTIONS_FOLDER + 'pre_2.mot')
         self.beoSpeakMotion("Answer my questions!", MOTIONS_FOLDER + 'pre_3.mot')
         sleep(2)
@@ -245,7 +257,9 @@ class IsItGame:
             if len(possible_objs) == 1:
                 break
             elif len(possible_objs) == 0:
+                self.beo_eyes.set_expression("sad")
                 self.beoSpeakMotion("I think you made a mistake...")
+                self.beo_eyes.set_expression("default")
 
         obj = possible_objs[0].replace("_", " ")
         self.beoSpeakMotion("You're thinking of the " + obj + "?. Right?", MOTIONS_FOLDER + 'bbeo_0.mot')
@@ -253,32 +267,52 @@ class IsItGame:
         self.yesno_sd.run(process=False)
 
         if self.player_said == 'yes':
+            self.beo_eyes.set_expression("shut")
             self.beoSpeakMotion("Yesss. I knew it.", MOTIONS_FOLDER + 'bbeo_1.mot')
         elif self.player_said == 'no':
+            self.beo_eyes.set_expression("sad")
             self.beoSpeakMotion("Ahhh. I can't believe I was wrong.", MOTIONS_FOLDER + 'pre_2.mot')
+            self.beo_eyes.set_expression("shut")
             self.beoSpeakMotion("Congratulations.", MOTIONS_FOLDER + 'bbeo_0.mot')
 
         sleep(2)
 
     def UserGuesser0(self):
+        self.beo_eyes.set_expression("default")
         self.beoSpeakMotion("Now it's your turn to be the guesser.", MOTIONS_FOLDER + 'user_1.mot')
 
         self.beoSpeakMotion("I'm gonna pick an object. Give me a second.", MOTIONS_FOLDER + 'user_0.mot')
 
-        sleep(3)
+        sleep(0.5)
 
+        self.beo_movs.play_motion_file(MOTIONS_FOLDER + "head.mot")
+
+        self.beo_eyes.set_expression("shut")
         self.beoSpeakMotion("Okay, I'm ready. You can ask me 5 questions.", MOTIONS_FOLDER + 'user_2.mot')
+        self.beo_eyes.set_expression("default")
 
         self.beo_picker = BeoPicker(self.objs_features)
         self.beo_picker.pickRandomObject()
         # Game loop
-        for i in range(5): # User gets to ask 5 questions
+        questions_asked = 0
+        while questions_asked < 5: # User gets to ask 5 questions
             self.isit_sd.run(process=True)
 
+            if self.player_said == "":
+                self.beo_eyes.set_expression("sad")
+                self.beoSpeakMotion("Sorry, I didn't understand what you said.", MOTIONS_FOLDER + "movimentos/S1_2.dat")
+                self.beo_eyes.set_expression("default")
+                self.beoSpeakMotion("Say it again.", MOTIONS_FOLDER + "movimentos/S1_1.dat")
+                continue
+
             if self.player_said.lower() in self.beo_picker.chosen_chars:
+                self.beo_eyes.set_expression("shut")
                 self.beoSpeakMotion("Yes.", MOTIONS_FOLDER + 'uuser_0.mot')
+                self.beo_eyes.set_expression("default")
             else:
                 self.beoSpeakMotion("No.", MOTIONS_FOLDER + 'uuser_1.mot')
+
+            questions_asked += 1
 
 
     def darknet_cb(self, info):
@@ -300,17 +334,30 @@ class IsItGame:
         while self.dn_detected == None: pass
 
         if self.dn_detected == True:
+            self.beo_eyes.set_expression("shut")
             self.beoSpeakMotion("Yes, that's the correct object.", MOTIONS_FOLDER + 'uuser_0.mot')
+            self.beo_eyes.set_expression("default")
         elif self.dn_detected == False:
-            self.beoSpeakMotion("No, I was thinking of another object.", MOTIONS_FOLDER + 'uuser_1.mot')
+            self.beo_eyes.set_expression("sad")
+            obj = self.beo_picker.chosen_obj.replace("_", " ")
+            self.beoSpeakMotion("No, I was thinking of the " + obj,
+                                MOTIONS_FOLDER + 'uuser_1.mot')
+            self.beo_eyes.set_expression("shut")
+            self.beoSpeakMotion("I won this one.", MOTIONS_FOLDER + 'bbeo_1.mot')
+            self.beo_eyes.set_expression("default")
 
     def FinalState(self):
-        sleep(2)
-        self.beoSpeakMotion("Thanks for playing with me.", MOTIONS_FOLDER + "exp_2.mot")
+        self.beo_eyes.set_expression("default")
+        sleep(1)
+        self.beoSpeakMotion("Thanks for playing with me.", MOTIONS_FOLDER + "movimentos/S8_3.dat")
+        sleep(0.2)
+        self.beo_eyes.set_expression("shut")
+        self.beoSpeakMotion("See you next time.", MOTIONS_FOLDER + "wave.mot")
+        self.beo_eyes.set_expression("default")
 
     def run(self):
         # Initial state of the game
-        self.state = States.INTRODUCTION
+        self.state = States.USER_GUESSER0
 
         while True:
             if self.state == States.INTRODUCTION:
