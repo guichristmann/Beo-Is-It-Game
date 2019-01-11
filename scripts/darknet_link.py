@@ -2,7 +2,7 @@
 
 import rospy
 import cv2
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import Image, CompressedImage
 from std_msgs.msg import String
 from cv_bridge import CvBridge 
 from darknet_ros_msgs.msg import BoundingBoxes, BoundingBox
@@ -41,6 +41,7 @@ def capture_and_send_image_to_darknet_ros():
     rospy.init_node("capture_and_send_image_to_darknet_ros")
 
     pub = rospy.Publisher('/beo/camera/raw_image', Image, queue_size=1)
+    #compressed_pub = rospy.Publisher('/beo/camera/compressed_image', CompressedImage, queue_size=1)
 
     rospy.Subscriber('/darknet_ros/bounding_boxes/', BoundingBoxes, bboxes_callback)
 

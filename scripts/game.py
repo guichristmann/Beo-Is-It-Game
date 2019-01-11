@@ -406,7 +406,8 @@ class IsItGame:
 if __name__ == "__main__":
     # Adjust audio
     Popen(['pacmd', 'set-card-profile', 'bluez_card.70_99_1C_02_85_B7', 'a2dp_sink'])
-    sleep(1)
+    Popen(['pacmd', 'set-default-source', 'alsa_input.usb-046d_0825_295C05D0-02.analog-mono'])
+    sleep(2)
     Popen(['pacmd', 'set-default-sink', 'bluez_sink.70_99_1C_02_85_B7.a2dp_sink'])
 
     game = IsItGame()
