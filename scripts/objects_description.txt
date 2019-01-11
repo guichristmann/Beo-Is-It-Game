@@ -1,4 +1,4 @@
-fiction_book: white, yellow, medium-sized, fiction, rectangular, smooth, light
+fiction_book: white, book, yellow, medium-sized, fiction, rectangular, smooth, light
 journal: brown, thin, blank, soft-cover, notebook, light, small, rectangular
 batman_notebook: colorful, batman, hard-cover, medium-sized, rectangular, notebook, light, large, big
 movie_encyclopedia: colorful, book, rectangular, thick, heavy, movies, large, big
