@@ -107,7 +107,7 @@ class BeoPicker:
 
     def pickRandomObject(self):
         self.chosen_obj = random.sample(self.objs, 1)[0]
-        #self.chosen_obj = 'journal'
+        self.chosen_obj = 'plain_orange_ball'
         self.chosen_chars = self.objs_dict[self.chosen_obj]
 
         print("[pickRandomObject] Chosen Object: {}".format(self.chosen_obj))
@@ -357,7 +357,7 @@ class IsItGame:
 
     def run(self):
         # Initial state of the game
-        self.state = States.USER_GUESSER0
+        self.state = States.INTRODUCTION
 
         while True:
             if self.state == States.INTRODUCTION:
