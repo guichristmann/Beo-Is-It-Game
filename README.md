@@ -1,4 +1,4 @@
-# Beo-Is-It-Game
+# Guessing objects with Robot Beo
 A HRI game in which you guess objects with a robot.
 
 This a human-robot interaction game developed for the final project of my bachelor in computer engineering. The game consists in trying to guess which of the objects on the table the other player chose. Each player (human and robot) take turns in asking 5 questions of the format "Is it X", where X is a characteristic of the object.
